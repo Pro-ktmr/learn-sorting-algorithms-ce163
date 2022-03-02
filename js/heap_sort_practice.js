@@ -3,7 +3,7 @@ import Config from './config.js';
 import Grid from './grid.js';
 import Line from './line.js';
 import SortPracticeStrict from './sort_practice_strict.js';
-import Text from './text.js';
+import CounterText from './counter_text.js';
 import Utility from './utility.js';
 
 export default class HeapSortPractice extends SortPracticeStrict {
@@ -26,36 +26,6 @@ export default class HeapSortPractice extends SortPracticeStrict {
         }
     }
 
-    set(array) {
-        super.set(array);
-
-        this.correctOperations = this.calculateActions(array);
-        this.step = 0;
-    }
-
-    advanceInternal() {
-        if (this.correctOperations[this.step][0][0] == 'compare') {
-            var text = this.canvas.getText(0);
-            text.setText('比較：' + (parseInt(text.text.replace(/[^0-9]/g, '')) + 1) + ' 回');
-        }
-        if (this.correctOperations[this.step][0][0] == 'swap') {
-            var itr = this.correctOperations[this.step][0][1].values();
-            var c1 = this.canvas.getCard(itr.next().value);
-            var c2 = this.canvas.getCard(itr.next().value);
-            var c1X = c1.getX(), c1Y = c1.getY();
-            c1.moveImmediatelyTo(c2.getX(), c2.getY());
-            c2.moveImmediatelyTo(c1X, c1Y);
-            var text = this.canvas.getText(1);
-            text.setText('交換：' + (parseInt(text.text.replace(/[^0-9]/g, '')) + 1) + ' 回');
-        }
-        if (this.correctOperations[this.step][0][0] == 'fix') {
-            var card = this.canvas.getCard(this.correctOperations[this.step][0][1]);
-            card.fix();
-        }
-        this.next();
-        this.step++;
-    }
-
     build(array) {
         this.canvas.clearAll();
         for (var i = 0; i < HeapSortPractice.maxLength; i++) {
@@ -70,12 +40,10 @@ export default class HeapSortPractice extends SortPracticeStrict {
             card.setSmallPinImage('shadow');
             this.canvas.addCard(card);
         }
-        var compareText = new Text();
-        compareText.setText(`${Config.wordCompare}：0 回`);
+        var compareText = new CounterText(`${Config.wordCompare}: <counter> ${Config.wordTime}`);
         compareText.setCoordinate(200, 640);
         this.canvas.addText(compareText);
-        var swapText = new Text();
-        swapText.setText(`${Config.wordSwap}：0 回`);
+        var swapText = new CounterText(`${Config.wordSwap}: <counter> ${Config.wordTime}`);
         swapText.setCoordinate(200, 680);
         this.canvas.addText(swapText);
 
@@ -189,6 +157,8 @@ export default class HeapSortPractice extends SortPracticeStrict {
                 }
             }
         }
+
+        this.mid = actions.length;
 
         // 後半
         for (var i = N - 1; i > 0; i--) {
@@ -307,6 +277,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
     }
 
     next() {
+        // 操作が 1 つ進んだときのヒント線の更新
         for (var i = 1; i < this.correctOperations[this.step].length; i++) {
             var action = this.correctOperations[this.step][i];
             if (action[0] == 'showLine') {
@@ -324,6 +295,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
     }
 
     turnCard(card) {
+        // カードを 1 枚だけ開く操作もあるのでオーバーライドが必要
         card.turn();
         this.operationLog.push(['turnCard', card]);
 
@@ -350,8 +322,8 @@ export default class HeapSortPractice extends SortPracticeStrict {
                 operation = this.correctOperations[this.step][0];
             }
 
-            var text = this.canvas.getText(0);
-            text.setText('比較：' + (parseInt(text.text.replace(/[^0-9]/g, '')) + 1) + ' 回');
+            this.canvas.getText(0).countUp();
+            this.operationLog.push(['comparePlus']);
 
             if (this.step < this.correctOperations.length
                 && operation[0] == 'compare'
@@ -361,10 +333,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
                 this.operationLog.push(['stepForward']);
             }
             else {
-                setTimeout(function () {
-                    this.back();
-                    this.canvas.addCross(640, 360).setSize(40, 400);
-                }.bind(this), 200);
+                this.detectWrongOperation();
             }
         }
     }
@@ -374,8 +343,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
         card.moveImmediatelyTo(anotherCard.getX(), anotherCard.getY());
         anotherCard.moveImmediatelyTo(tmpX, tmpY);
 
-        var text = this.canvas.getText(1);
-        text.setText('交換：' + (parseInt(text.text.replace(/[^0-9]/g, '')) + 1) + ' 回');
+        this.canvas.getText(1).countUp();
 
         this.operationLog.push(['swapCards', card, anotherCard]);
 
@@ -389,10 +357,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
             this.operationLog.push(['stepForward']);
         }
         else {
-            setTimeout(function () {
-                this.back();
-                this.canvas.addCross(640, 360).setSize(40, 400);
-            }.bind(this), 200);
+            this.detectWrongOperation();
         }
     }
 
@@ -410,10 +375,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
             this.operationLog.push(['stepForward']);
         }
         else {
-            setTimeout(function () {
-                this.back();
-                this.canvas.addCross(640, 360).setSize(40, 400);
-            }.bind(this), 200);
+            this.detectWrongOperation();
         }
     }
 
@@ -423,6 +385,10 @@ export default class HeapSortPractice extends SortPracticeStrict {
         if (operation[0] == 'stepForward') {
             this.step--;
             this.prev();
+            this.back();
+        }
+        if (operation[0] == 'comparePlus') {
+            this.canvas.getText(0).countDown();
             this.back();
         }
         if (operation[0] == 'turnCard') {
@@ -453,6 +419,29 @@ export default class HeapSortPractice extends SortPracticeStrict {
                     this.canvas.getLine(j).toggle();
                 }
             }
+        }
+    }
+
+    skipFirstHalf() {
+        for (var i = 0; i < this.mid; i++) {
+            if (this.correctOperations[this.step][0][0] == 'compare') {
+                this.canvas.getText(0).countUp();
+            }
+            if (this.correctOperations[this.step][0][0] == 'swap') {
+                var itr = this.correctOperations[this.step][0][1].values();
+                var c1 = this.canvas.getCard(itr.next().value);
+                var c2 = this.canvas.getCard(itr.next().value);
+                var c1X = c1.getX(), c1Y = c1.getY();
+                c1.moveImmediatelyTo(c2.getX(), c2.getY());
+                c2.moveImmediatelyTo(c1X, c1Y);
+                this.canvas.getText(1).countUp();
+            }
+            if (this.correctOperations[this.step][0][0] == 'fix') {
+                var card = this.canvas.getCard(this.correctOperations[this.step][0][1]);
+                card.fix();
+            }
+            this.next();
+            this.step++;
         }
     }
 

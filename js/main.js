@@ -1,4 +1,5 @@
 import Utility from './utility.js';
+import Config from './config.js';
 
 import BubbleSortAnimation from './bubble_sort_animation.js';
 import SelectionSortAnimation from './selection_sort_animation.js';
@@ -16,17 +17,9 @@ var animation, practice;
 
 window.onload = function () {
     var algorithmName = Utility.getQuery('algorithm');
-    var algorithmToTitle = {
-        'array_sort': 'フリー (配列)',
-        'tree_sort': 'フリー (木)',
-        'bubble_sort': 'バブルソート',
-        'selection_sort': '選択ソート',
-        'selection_sort_slow': '選択ソート (遅)',
-        'heap_sort': 'ヒープソート',
-    };
-    if (algorithmName !== null && algorithmName in algorithmToTitle) {
-        document.getElementById('title').innerHTML = algorithmToTitle[algorithmName];
-        document.getElementsByTagName('title')[0].innerHTML = algorithmToTitle[algorithmName];
+    if (algorithmName !== null && algorithmName in Config.algorithmToTitle) {
+        document.getElementById('title').innerHTML = Config.algorithmToTitle[algorithmName];
+        document.getElementsByTagName('title')[0].innerHTML = Config.algorithmToTitle[algorithmName];
     }
 
     if (document.getElementById('animation_canvas')) {
@@ -127,48 +120,20 @@ export function shuffle() {
 
 export function set(id) {
     var input = document.getElementById(id).value;
-
-    const pattern = {
-        'パターン1-1': [65, 83, 31, 22, 59, 46, 19],
-        'パターン1-2': [92, 20, 85, 50, 37, 76, 61],
-        'パターン1-3': [87, 32, 15, 28, 75, 52, 47],
-        'パターン2-1': [55, 71, 12, 43, 80, 36, 93],
-        'パターン2-2': [40, 22, 18, 93, 51, 67, 34],
-        'パターン2-3': [43, 13, 27, 90, 88, 72, 55],
-        'パターン3-1': [62, 81, 35, 22, 51, 47, 11],
-        'パターン3-2': [26, 87, 57, 93, 34, 70, 68],
-        'パターン3-3': [19, 21, 56, 45, 97, 82, 73],
-        'パターン3-1(途中から)': [62, 81, 35, 22, 51, 47, 11],
-        'パターン3-2(途中から)': [26, 87, 57, 93, 34, 70, 68],
-        'パターン3-3(途中から)': [19, 21, 56, 45, 97, 82, 73],
-    };
-    const patternOnTheWayAnimation = {
-        'パターン3-1(途中から)': 44,
-        'パターン3-2(途中から)': 49,
-        'パターン3-3(途中から)': 54,
-    };
-    const patternOnTheWayPractice = {
-        'パターン3-1(途中から)': 16,
-        'パターン3-2(途中から)': 19,
-        'パターン3-3(途中から)': 22,
-    };
-    if (input in pattern) {
+    
+    if (input in Config.pattern) {
         if (animation) {
-            animation.set(pattern[input]);
-            animation.addMessage('現在の入力：' + input);
-            if (input in patternOnTheWayAnimation) {
-                for (var i = 0; i < patternOnTheWayAnimation[input]; i++) {
-                    animation.advance();
-                }
+            animation.set(Config.pattern[input]);
+            animation.addMessage('現在の入力: ' + input);
+            if (Config.patternOnTheWay.includes(input) && animation.skipFirstHalf) {
+                animation.skipFirstHalf();
             }
         }
         if (practice) {
-            practice.set(pattern[input]);
-            practice.addMessage('現在の入力：' + input);
-            if (input in patternOnTheWayPractice && practice.advanceInternal) {
-                for (var i = 0; i < patternOnTheWayPractice[input]; i++) {
-                    practice.advanceInternal();
-                }
+            practice.set(Config.pattern[input]);
+            practice.addMessage('現在の入力: ' + input);
+            if (Config.patternOnTheWay.includes(input) && practice.skipFirstHalf) {
+                practice.skipFirstHalf();
             }
         }
         document.getElementById(id).value = '';
@@ -199,11 +164,11 @@ export function set(id) {
     }
     if (animation) {
         animation.set(array);
-        animation.addMessage('現在の入力：' + input);
+        animation.addMessage('現在の入力: ' + input);
     }
     if (practice) {
         practice.set(array);
-        practice.addMessage('現在の入力：' + input);
+        practice.addMessage('現在の入力: ' + input);
     }
     document.getElementById(id).value = '';
 }

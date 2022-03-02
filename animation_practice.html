@@ -13,14 +13,14 @@
       }
     </style>
     <script src="js/main.js" type="module"></script>
-    <title>アニメーション＋実習環境</title>
+    <title>アニメーション＋演習</title>
   </head>
   <body>
     <div class="bg_pattern Polka"></div>
 
     <div class="title_bar">
       <span class="btn_page_back" onclick="window.history.back()"></span>
-      <span id="title">アニメーション＋実習環境</span>
+      <span id="title">アニメーション＋演習</span>
     </div>
 
     <div class="container">
@@ -39,8 +39,8 @@
               <input type="button" value="▶|" title="1 コマ進める" onclick="animationAdvance()" />
             </div>
             <div class="row">
-              <label for="checkbox_make_all_transparent">透かす：</label><input type="checkbox" id="checkbox_make_all_transparent" title="全てのカードを透かす" onclick="animationMakeAllTransparent()" />　
-              <label for="animation_interval">スピード：</label><input type="range" id="animation_interval" value="3" min="1" max="6" />
+              <label for="checkbox_make_all_transparent">透かす: </label><input type="checkbox" id="checkbox_make_all_transparent" title="全てのカードを透かす" onclick="animationMakeAllTransparent()" />　
+              <label for="animation_interval">スピード: </label><input type="range" id="animation_interval" value="3" min="1" max="5" />
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@
               <input type="button" value="シャッフル" title="シャッフルする" onclick="practiceShuffle()" />　
             </div>
             <div class="row">
-              <input type="text" id="common_input" placeholder="コンマで区切って入力" size="16" list="common_input_example" />
+              <input type="text" id="common_input" placeholder="パターンを選択 または コンマで区切って入力 (例: 5,3,1,4,2)" size="24"  list="common_input_example" />
               <datalist id="common_input_example">
                 <option value="パターン1-1"></option>
                 <option value="パターン1-2"></option>
