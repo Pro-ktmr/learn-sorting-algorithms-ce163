@@ -1,5 +1,6 @@
 import Utility from './utility.js';
 import Config from './config.js';
+import Network from './network.js';
 
 import BubbleSortAnimation from './bubble_sort_animation.js';
 import SelectionSortAnimation from './selection_sort_animation.js';
@@ -23,6 +24,8 @@ window.onload = function () {
     }
 
     if (document.getElementById('animation_canvas')) {
+        Network.uploadOperationLog('onload', `onload ${algorithmName}`, 'animation');
+
         var algorithm = null;
         switch (algorithmName) {
             case 'bubble_sort':
@@ -63,6 +66,8 @@ window.onload = function () {
     }
 
     if (document.getElementById('practice_canvas')) {
+        Network.uploadOperationLog('onload', `onload ${algorithmName}`, 'practice', Utility.getQuery('username'));
+
         var algorithm = null;
         switch (algorithmName) {
             case 'array_sort':
@@ -113,6 +118,9 @@ window.onload = function () {
 
 export function shuffle() {
     var array = Utility.generateRandomArray(10, 98, 7);
+
+    if (animation) Network.uploadOperationLog('shuffle', `shuffle ${array}`, 'animation');
+    if (practice) Network.uploadOperationLog('shuffle', `shuffle ${array}`, 'practice');
 
     if (animation) animation.set(array);
     if (practice) practice.set(array);
@@ -176,15 +184,18 @@ export function set(id) {
 /* animation */
 
 export function animationBegin() {
+    Network.uploadOperationLog('begin', 'begin', 'animation');
     animation.begin();
 }
 
 export function animationBack() {
+    Network.uploadOperationLog('back', 'back', 'animation');
     animation.back();
 }
 
 var timeoutID = -1;
 export function animationPlay() {
+    Network.uploadOperationLog('play', 'play', 'animation');
     if (timeoutID == -1) {
         document.getElementById('btn_play').value = '⬛︎';
         var func = function () {
@@ -205,11 +216,12 @@ export function animationPlay() {
 }
 
 export function animationAdvance() {
+    Network.uploadOperationLog('advance', 'advance', 'animation');
     animation.advance();
 }
 
 export function makeAllTransparent() {
-
+    Network.uploadOperationLog('makeAllTransparent', `makeAllTransparent ${checkbox_make_all_transparent.checked}`, 'animation');
 }
 
 function getAnimationInterval() {
@@ -236,10 +248,12 @@ export function animationMouseMove(e) {
 /* practice */
 
 export function practiceBegin() {
+    Network.uploadOperationLog('begin', 'begin', 'practice');
     practice.begin();
 }
 
 export function practiceBack() {
+    Network.uploadOperationLog('back', 'back', 'practice');
     practice.back();
 }
 
@@ -249,6 +263,8 @@ export function practiceMouseDown(e) {
     var rect = e.target.getBoundingClientRect();
     var x = (e.clientX - rect.left) * width / (rect.right - rect.left);
     var y = (e.clientY - rect.top) * height / (rect.bottom - rect.top);
+
+    Network.uploadOperationLog('mDown', `mDown ${Math.round(x)} ${Math.round(y)}`, 'practice');
 
     practice.pointerDown(-1, x, y);
 }
@@ -270,6 +286,8 @@ export function practiceMouseUp(e) {
     var x = (e.clientX - rect.left) * width / (rect.right - rect.left);
     var y = (e.clientY - rect.top) * height / (rect.bottom - rect.top);
 
+    Network.uploadOperationLog('mUp', `mUp ${Math.round(x)} ${Math.round(y)}`, 'practice');
+
     practice.pointerUp(-1, x, y);
 }
 
@@ -280,6 +298,8 @@ export function practiceTouchDown(e) {
     for (var t of e.targetTouches) {
         var x = (t.clientX - rect.left) * width / (rect.right - rect.left);
         var y = (t.clientY - rect.top) * height / (rect.bottom - rect.top);
+
+        Network.uploadOperationLog('tDown', `tDown ${Math.round(x)} ${Math.round(y)}`, 'practice');
 
         practice.pointerDown(t.identifier, x, y);
     }
@@ -304,6 +324,8 @@ export function practiceTouchUp(e) {
     for (var t of e.changedTouches) {
         var x = (t.clientX - rect.left) * width / (rect.right - rect.left);
         var y = (t.clientY - rect.top) * height / (rect.bottom - rect.top);
+
+        Network.uploadOperationLog('tUp', `tUp ${Math.round(x)} ${Math.round(y)}`, 'practice');
 
         practice.pointerUp(t.identifier, x, y);
     }

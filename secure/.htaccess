@@ -1,0 +1,7 @@
+AuthType Basic
+AuthName "Input your ID and password."
+AuthUserFile .htpasswd
+require valid-user
+
+#initial id and password
+#root:fixme

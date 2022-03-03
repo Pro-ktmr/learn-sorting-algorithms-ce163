@@ -1,5 +1,6 @@
 import SortPractice from './sort_practice.js';
 import Utility from './utility.js';
+import Network from './network.js';
 
 export default class SortPracticeStrict extends SortPractice {
     constructor(canvas) {
@@ -17,6 +18,8 @@ export default class SortPracticeStrict extends SortPractice {
     }
 
     turnCard(card) {
+        Network.uploadOperationLog('turn', `turn ${card.value}`, 'practice');
+
         card.turn();
         this.operationLog.push(['turnCard', card]);
 
@@ -35,6 +38,7 @@ export default class SortPracticeStrict extends SortPractice {
                 && Utility.compareSets(this.correctOperations[this.step][1], this.getIndexOfCardsOpen())) {
                 this.step++;
                 this.operationLog.push(['stepForward']);
+                this.detectCorrectOperation();
             }
             else {
                 this.detectWrongOperation();
@@ -43,6 +47,8 @@ export default class SortPracticeStrict extends SortPractice {
     }
 
     swapCards(card, anotherCard) {
+        Network.uploadOperationLog('swap', `swap ${card.value} ${anotherCard.value}`, 'practice');
+
         var tmpX = card.getX(), tmpY = card.getY();
         card.moveImmediatelyTo(anotherCard.getX(), anotherCard.getY());
         anotherCard.moveImmediatelyTo(tmpX, tmpY);
@@ -56,6 +62,7 @@ export default class SortPracticeStrict extends SortPractice {
             && Utility.compareSets(this.correctOperations[this.step][1], new Set([this.getIndexOfCard(card), this.getIndexOfCard(anotherCard)]))) {
             this.step++;
             this.operationLog.push(['stepForward']);
+            this.detectCorrectOperation();
         }
         else {
             this.detectWrongOperation();
@@ -63,6 +70,8 @@ export default class SortPracticeStrict extends SortPractice {
     }
 
     fixCard(card) {
+        Network.uploadOperationLog('fix', `fix ${card.value}`, 'practice');
+
         card.fix();
         this.operationLog.push(['fixCard', card]);
 
@@ -71,6 +80,7 @@ export default class SortPracticeStrict extends SortPractice {
             && this.correctOperations[this.step][1] == this.getIndexOfCard(card)) {
             this.step++;
             this.operationLog.push(['stepForward']);
+            this.detectCorrectOperation();
         }
         else {
             this.detectWrongOperation();
@@ -78,12 +88,20 @@ export default class SortPracticeStrict extends SortPractice {
     }
 
     unfixCard(card) {
+        Network.uploadOperationLog('unfix', `unfix ${card.value}`, 'practice');
+
         card.unfix();
         this.operationLog.push(['unfixCard', card]);
         this.detectWrongOperation();
     }
 
+    detectCorrectOperation() {
+        Network.uploadOperationLog('success', `success`, 'practice');
+    }
+
     detectWrongOperation() {
+        Network.uploadOperationLog('failure', `failure`, 'practice');
+
         setTimeout(function () {
             this.back();
             this.canvas.addCross(640, 360).setSize(40, 400);

@@ -1,4 +1,5 @@
 import Canvas from './canvas.js';
+import Network from './network.js';
 
 export default class Practice {
     constructor(canvas) {
@@ -19,6 +20,6 @@ export default class Practice {
     }
 
     canvasChanged(canvas) {
-        // オーバーライド用
+        Network.uploadCanvas(canvas, 'practice');
     }
 }

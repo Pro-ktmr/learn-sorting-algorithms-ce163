@@ -296,6 +296,8 @@ export default class HeapSortPractice extends SortPracticeStrict {
 
     turnCard(card) {
         // カードを 1 枚だけ開く操作もあるのでオーバーライドが必要
+        Network.uploadOperationLog('turn', `turn ${card.value}`, 'practice');
+
         card.turn();
         this.operationLog.push(['turnCard', card]);
 
@@ -308,6 +310,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
                 this.next();
                 this.step++;
                 this.operationLog.push(['stepForward']);
+                this.detectCorrectOperation();
             }
         }
 
@@ -318,6 +321,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
                 this.next();
                 this.step++;
                 this.operationLog.push(['stepForward']);
+                this.detectCorrectOperation();
 
                 operation = this.correctOperations[this.step][0];
             }
@@ -331,6 +335,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
                 this.next();
                 this.step++;
                 this.operationLog.push(['stepForward']);
+                this.detectCorrectOperation();
             }
             else {
                 this.detectWrongOperation();
@@ -339,6 +344,8 @@ export default class HeapSortPractice extends SortPracticeStrict {
     }
 
     swapCards(card, anotherCard) {
+        Network.uploadOperationLog('swap', `swap ${card.value} ${anotherCard.value}`, 'practice');
+
         var tmpX = card.getX(), tmpY = card.getY();
         card.moveImmediatelyTo(anotherCard.getX(), anotherCard.getY());
         anotherCard.moveImmediatelyTo(tmpX, tmpY);
@@ -355,6 +362,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
             this.next();
             this.step++;
             this.operationLog.push(['stepForward']);
+            this.detectCorrectOperation();
         }
         else {
             this.detectWrongOperation();
@@ -362,6 +370,8 @@ export default class HeapSortPractice extends SortPracticeStrict {
     }
 
     fixCard(card) {
+        Network.uploadOperationLog('fix', `fix ${card.value}`, 'practice');
+        
         card.fix();
         this.operationLog.push(['fixCard', card]);
 
@@ -373,6 +383,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
             this.next();
             this.step++;
             this.operationLog.push(['stepForward']);
+            this.detectCorrectOperation();
         }
         else {
             this.detectWrongOperation();

@@ -1,6 +1,7 @@
 import Practice from './practice.js';
 import Text from './text.js';
 import Utility from './utility.js';
+import Network from './network.js';
 
 export default class SortPractice extends Practice {
     constructor(canvas) {
@@ -86,6 +87,8 @@ export default class SortPractice extends Practice {
     }
 
     turnCard(card) {
+        Network.uploadOperationLog('turn', `turn ${card.value}`, 'practice');
+
         card.turn();
         this.operationLog.push(['turnCard', card]);
 
@@ -98,6 +101,8 @@ export default class SortPractice extends Practice {
     }
 
     swapCards(card, anotherCard) {
+        Network.uploadOperationLog('swap', `swap ${card.value} ${anotherCard.value}`, 'practice');
+
         var tmpX = card.getX(), tmpY = card.getY();
         card.moveImmediatelyTo(anotherCard.getX(), anotherCard.getY());
         anotherCard.moveImmediatelyTo(tmpX, tmpY);
@@ -108,11 +113,15 @@ export default class SortPractice extends Practice {
     }
 
     fixCard(card) {
+        Network.uploadOperationLog('fix', `fix ${card.value}`, 'practice');
+
         card.fix();
         this.operationLog.push(['fixCard', card]);
     }
 
     unfixCard(card) {
+        Network.uploadOperationLog('unfix', `unfix ${card.value}`, 'practice');
+
         card.unfix();
         this.operationLog.push(['unfixCard', card]);
     }
