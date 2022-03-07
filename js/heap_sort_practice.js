@@ -308,6 +308,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
                 this.next();
                 this.step++;
                 this.operationLog.push(['stepForward']);
+                this.detectCorrectOperation();
             }
         }
 
@@ -318,6 +319,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
                 this.next();
                 this.step++;
                 this.operationLog.push(['stepForward']);
+                this.detectCorrectOperation();
 
                 operation = this.correctOperations[this.step][0];
             }
@@ -331,6 +333,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
                 this.next();
                 this.step++;
                 this.operationLog.push(['stepForward']);
+                this.detectCorrectOperation();
             }
             else {
                 this.detectWrongOperation();
@@ -355,6 +358,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
             this.next();
             this.step++;
             this.operationLog.push(['stepForward']);
+            this.detectCorrectOperation();
         }
         else {
             this.detectWrongOperation();
@@ -373,6 +377,7 @@ export default class HeapSortPractice extends SortPracticeStrict {
             this.next();
             this.step++;
             this.operationLog.push(['stepForward']);
+            this.detectCorrectOperation();
         }
         else {
             this.detectWrongOperation();

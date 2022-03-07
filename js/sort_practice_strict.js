@@ -35,6 +35,7 @@ export default class SortPracticeStrict extends SortPractice {
                 && Utility.compareSets(this.correctOperations[this.step][1], this.getIndexOfCardsOpen())) {
                 this.step++;
                 this.operationLog.push(['stepForward']);
+                this.detectCorrectOperation();
             }
             else {
                 this.detectWrongOperation();
@@ -56,6 +57,7 @@ export default class SortPracticeStrict extends SortPractice {
             && Utility.compareSets(this.correctOperations[this.step][1], new Set([this.getIndexOfCard(card), this.getIndexOfCard(anotherCard)]))) {
             this.step++;
             this.operationLog.push(['stepForward']);
+            this.detectCorrectOperation();
         }
         else {
             this.detectWrongOperation();
@@ -71,6 +73,7 @@ export default class SortPracticeStrict extends SortPractice {
             && this.correctOperations[this.step][1] == this.getIndexOfCard(card)) {
             this.step++;
             this.operationLog.push(['stepForward']);
+            this.detectCorrectOperation();
         }
         else {
             this.detectWrongOperation();
@@ -81,6 +84,10 @@ export default class SortPracticeStrict extends SortPractice {
         card.unfix();
         this.operationLog.push(['unfixCard', card]);
         this.detectWrongOperation();
+    }
+
+    detectCorrectOperation() {
+
     }
 
     detectWrongOperation() {
